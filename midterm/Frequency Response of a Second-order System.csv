@@ -1,0 +1,3498 @@
+Learner ID,Solution ID,Solution Code,Tests Passed,Total Tests,Submitted Time,Correct,% Score
+0d4d7215372ab1050b9959c942d859fcfefcf768,fd008b4a-1e61-46e8-86eb-9dd0ff951a40,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 0.707)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+
+simplify((wnn^2- w^2)^2 + (z*w*wnn)^2, 'Steps', 4)
+
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+% Simplified further by hand to 1/(2*z*sqrt(1 - zeta^2))
+
+bwSol = solve(Giw == 10^(-3/20), w)
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",3,4,05/03/2024  02:00 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,656b1821-ff75-46c3-9ef0-deb925d2bc26,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+wr = (wn*wn)/(2*zeta*wn - wn*wn)  % resonant frequency in units of rad/sec
+wr = 2*zeta*wn  % resonant frequency in units of rad/sec
+wr = zeta*wn  % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  02:00 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,5a6af97a-b3ca-45da-b758-68382be0bf4d,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( 1 / sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 1 / sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:59 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,23b4a470-061a-4801-99f2-d7c6eef626b2,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+wr = (wn*wn)/(2*zeta*wn - wn*wn)  % resonant frequency in units of rad/sec
+wr = 2*zeta*wn *180/pi % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:59 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,a4cc1727-0f50-40d0-909e-0ad4a7ac3951,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+wr = (wn*wn)/(2*zeta*wn - wn*wn)  % resonant frequency in units of rad/sec
+wr = 2*zeta*wn  % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:58 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,7dcc3ed3-49bf-45ea-b140-b149c648238b,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( 1 / sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 1 / sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( 2 * sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:58 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,e49bd87a-b45f-409c-aa63-bc067e33f67f,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( 1 / sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 1 / sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:57 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,8c13a9eb-073c-4177-aa36-83ed7ec8d0b8,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+wr = (wn*wn)/(2*zeta*wn - wn*wn) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:57 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,445789d8-9577-4946-8aea-10238855fce1,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( 1 * sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 1 * sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:56 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,f825476c-699d-4a25-bb24-e6629d4a34d4,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)/zeta))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:55 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,92c16c88-fee1-4a27-88a6-088d99d65f64,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)*zeta))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:55 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,af20a6df-976c-494f-bd6a-13b6ab6af59a,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 1 * sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:55 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,44771caa-53a9-4222-b5ff-5bf05fe24d50,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% why didn't using the poles work?
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:55 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,73dacf9b-f5db-477e-9cc9-34a33fc1281f,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = (2*zeta*wn)-(wn*wn) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:54 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,aa0adc6e-842a-4fef-baab-f11b0eb9c8fe,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function and Bode plot:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = 2 * sqrt(zeta)
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:52 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,03c9468c-3f3c-4b25-92f7-62f57cfad9cb,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+%Mr = sqrt(wn) * zeta^2
+Mr = (10 ^ zeta) / 2
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:50 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,bba8cc74-9396-4530-b8bb-1a3ffcd5e38e,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+%Mr = sqrt(wn) * zeta^2
+Mr = 10^zeta / 2
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:49 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,563e0b39-21f2-4e47-b2e3-cb153ac81d82,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = zeta/(2 * sqrt(wn)) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:48 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,e03c5215-9d74-4e2c-bc9c-5d9350924efc,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = sqrt(wn) * zeta^2
+
+
+
+% Bandwidth in units of rad/sec
+
+wb = 10^ ( sqrt(wn) * zeta^2 )
+
+",1,4,05/03/2024  01:47 AM UTC,false,0.000000
+9a80eb1d38e3aeb8663e2fa613a2cef854d1f15e,a70db3c1-4497-4842-8ab6-24d62f2fef38,"wn = 50;
+zeta = 0.5;
+
+G = (wn^2)/((i*wn)^2 + 2*zeta*wn*i*wn + wn^2)
+[w z p] = damp(G)
+phase = angle(G)
+
+
+% Compute the values below:
+wr = phase % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(G)); % peak amplitude in units of decibels
+wb = NaN %(-3dB freq) - (wr) % bandwidth in units of rad/sec",1,4,05/03/2024  01:47 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,96a13411-5f45-41e6-ba37-9b6a664173f1,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+disp(val1)
+
+disp('Resonant Frequency:');
+disp( w(loc1) )
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+disp( loc2(1) )
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 10^ ( sqrt(wn) * zeta^2 )
+
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = sqrt(wn) * zeta^2
+
+
+
+% Bandwidth in units of rad/sec
+wb = sqrt(wn * zeta)
+
+",1,4,05/03/2024  01:46 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,a2deac09-5b15-4373-8e7b-38fc9804018e,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 1/(2 * sqrt(zeta*wn)) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:43 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,30f2f091-e588-4141-9470-2897b2d78196,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = sqrt(wn * zeta)
+
+syms x
+eqn = val1 == log10(x)
+double(solve(eqn, x))
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = sqrt(wn) * zeta^2
+
+
+
+% Bandwidth in units of rad/sec
+wb = sqrt(wn * zeta)
+
+",1,4,05/03/2024  01:43 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,47722ce4-38c2-4dde-89ab-fed8a38dac5e,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = sqrt(wn * zeta)
+
+syms x
+eqn = val1 == log10(x)
+double(solve(eqn, x))
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = sqrt(wn * zeta)
+
+
+
+% Bandwidth in units of rad/sec
+wb = sqrt(wn * zeta)
+
+",1,4,05/03/2024  01:42 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,b6c99b40-2b7f-4eeb-95e5-86ca7c048538,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 1/(2 * zeta* sqrt(wn)) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:41 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,3b8caa5e-a74d-44ef-a60f-04f5d0e15964,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = sqrt(wn * zeta)
+
+syms x
+eqn = val1 == log10(x)
+double(solve(eqn, x))
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = log10 ( sqrt(wn * zeta) )
+
+
+
+% Bandwidth in units of rad/sec
+wb = sqrt(wn * zeta)
+
+",1,4,05/03/2024  01:41 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,f2147f1c-ca1d-422f-a191-05a1969b4530,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 1/(2 * zeta* sqrt(wn)) * 180/pi % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:41 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,21c516a9-0131-456b-896b-e9364213f99c,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 1/(2 * sqrt(wn)) * 180/pi % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:40 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,0be78340-8244-46a9-854b-5f3441167fb6,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = sqrt(wn) * 180/pi * 0.5 % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:39 AM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,8d55fdc2-b38c-4741-9586-62889e9fb883,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 0.707)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+% Simplified further by hand to 1/(2*z*sqrt(1 - zeta^2))
+
+bwSol = solve(Giw == 10^(-3/20), w)
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+wb =  abs(wn*zeta*1i + (wn*(-4*zeta^2 - 5261181026478316/3188304370750917)^(1/2))/2)% bandwidth in units of rad/sec",3,4,05/03/2024  01:39 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,4f68b504-803e-481f-88f9-066a912406a9,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = srqt(50) * 180/pi * 0.5 % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(wr))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",0,4,05/03/2024  01:38 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,587ef10e-c4e3-4b85-adc9-b733f5b02af4,"wn = 50;
+zeta = 0.5;
+
+% Set up transfer function
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+%% Make bode plot without using bode function
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+%% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+%% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+%% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+legend('Bode Plot', 'Resonance', 'Bandwidth', 'Location', 'southwest');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+%% Compute the values below:
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = sqrt(wn) * 1/zeta
+
+syms x
+eqn = val1 == log10(x)
+double(solve(eqn, x))
+
+% Peak amplitude in units of decibels
+% 
+% Mr = log10( wr )
+
+Mr = log10 ( 1 / sqrt(zeta) )
+
+
+
+% Bandwidth in units of rad/sec
+wb = log10 ( 1 / (wn / zeta) )
+
+",1,4,05/03/2024  01:38 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,76bfa88f-2df0-41f1-943b-9ab71c755eab,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 50 * 180/pi * 0.5 % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:38 AM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,48b5877d-7d3f-4174-b1de-d0fac14a51f1,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 1)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+% Simplified further by hand to 1/(2*z*sqrt(1 - zeta^2))
+
+bwSol = solve(Giw == 10^(-3/20), w)
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+wb =  wn*zeta*1i + (wn*(-4*zeta^2 - 5261181026478316/3188304370750917)^(1/2))/2% bandwidth in units of rad/sec",3,4,05/03/2024  01:36 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,c1b38e3e-6c4a-4596-9a07-bddecbb98f1e,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = 50 * 180/pi * 0.5 % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:36 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,30168ddc-c5d3-4dbe-b1c0-39dcda831c22,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+%syms a
+%eqn_a = a + wn^2/a == 2*zeta*wn
+%a = solve(eqn_a, a)
+% Compute the values below:
+wr = 0.5 *norm(poles(1)) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:32 AM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,b20d3e50-f403-49c4-b09c-defbb6de674f,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+% Compute the values below:
+wr = 50*180/pi % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/03/2024  01:29 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,aa646963-5dc0-415e-b02a-8614700842e6,"wn = 50;
+zeta = 0.5;
+
+clc;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Set up transfer function
+
+%num = wn^2;
+%den = [1, 2*zeta*wn, wn^2];
+
+%Gtf = tf( num, den )
+
+%pzmap(Gtf)
+%[z,p,k] = tf2zp(num,den)
+
+%%%%
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+
+%% Make bode plot without using bode function
+
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+% Computations
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 1/ (2*sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+Mr = 1 / ( wn * zeta )
+
+
+
+% Bandwidth in units of rad/sec
+wb = 2 * zeta * wn
+
+",1,4,05/03/2024  01:23 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,3859f47c-13ea-4275-b1c4-d7f4acf0f9ab,"wn = 50;
+zeta = 0.5;
+
+clc;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Set up transfer function
+
+%num = wn^2;
+%den = [1, 2*zeta*wn, wn^2];
+
+%Gtf = tf( num, den )
+
+%pzmap(Gtf)
+%[z,p,k] = tf2zp(num,den)
+
+%%%%
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+
+%% Make bode plot without using bode function
+
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 300);
+
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+
+
+% Find resonant frequency and resonant amplitude values
+
+[val1, loc1] = max(magnitude_in_dB);
+
+val1 = double(val1);
+
+disp('Resonant Amplitude:');
+val1
+
+disp('Resonant Frequency:');
+w(loc1)
+
+
+
+% Find bandwidth frequency, where magnitude = -3 dB
+
+mag_modified = round( double(magnitude_in_dB), 0);
+
+[val2] = find(mag_modified == -3);
+loc2 = w(val2);
+
+disp('Bandwidth frequency:');
+loc2(1)
+
+
+
+% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+hold on
+
+plot( w(loc1), val1, 'ro');
+plot( loc2(1), -3, 'ko');
+
+hold off
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+% Computations
+
+
+% For this transfer function:
+% 
+% wr = 35.8123
+% Mr =  1.2484
+% wb = 62.3498
+% 
+% wn = 50.0
+% zt =  0.5
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 1/ (2*sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+Mr = 1 / ( wn * zeta )
+
+
+
+% Bandwidth in units of rad/sec
+%wb = 
+
+",1,4,05/03/2024  01:22 AM UTC,false,0.000000
+f746af1855dfa704cb7914d75d5b9d40b987222f,5c0f108c-691f-484b-a96e-a869f39a700b,"wn = 50;
+zeta = 0.5;
+
+freq = logspace(-1,2,10000)/(2*pi);
+omeg = 2*1i*pi.*freq;
+
+respon = wn^2./((omeg).^2 + 2*zeta*wn.*omeg + wn^2);
+
+x = find(20*log10(abs(respon)) <-3);
+y = freq(x)*2*pi;
+
+resonant = find(20*log10(abs(respon)) == 20*log10(abs(max(respon))));
+resonantFreq = freq(resonant)*2*pi;
+
+% Compute the values below:
+wr = resonantFreq % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(max(respon))) % peak amplitude in units of decibels
+wb = y(1) % bandwidth in units of rad/sec",4,4,05/03/2024  01:20 AM UTC,true,0.000000
+f746af1855dfa704cb7914d75d5b9d40b987222f,f4de0c1c-1169-4923-8f92-ce47d73011dd,"wn = 50;
+zeta = 0.5;
+
+freq = logspace(-1,2,10000)/(2*pi);
+omeg = 2*1i*pi.*freq;
+
+respon = wn^2./((omeg).^2 + 2*zeta*wn.*omeg + wn^2);
+semilogx(freq*2*pi, 20.*log10(abs(respon)))
+
+x = find(20*log10(abs(respon)) <-3);
+y = freq(x)*2*pi;
+% Compute the values below:
+wr = wn*sqrt(1-zeta^2) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(max(respon))) % peak amplitude in units of decibels
+wb = y(1) % bandwidth in units of rad/sec",3,4,05/03/2024  01:17 AM UTC,false,0.000000
+f746af1855dfa704cb7914d75d5b9d40b987222f,b4f59fc0-8aff-4379-a391-e0f787d2823f,"wn = 50;
+zeta = 0.5;
+
+freq = logspace(-1,2,100)/(2*pi);
+omg = 2*1i*pi.*freq;
+
+sys = tf([wn^2] , [1 2*zeta*wn wn^2]);
+respon = wn^2./((omg).^2 + 2*zeta*wn.*omg + wn^2);
+20*log10(abs(max(respon)))
+semilogx(freq*2*pi, 20.*log10(abs(respon)))
+
+
+% Compute the values below:
+wr = wn*sqrt(1-zeta^2) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(max(respon))) % peak amplitude in units of decibels
+wb = NaN % bandwidth in units of rad/sec",2,4,05/03/2024  01:05 AM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,86b62c00-63d7-4132-a9df-89d5618530a4,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))
+wb =  (sqrt((1 - 2*zeta^2)+sqrt((1-2*zeta^2)^2+1)))*wn
+",4,4,05/03/2024  12:55 AM UTC,true,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,4e02756f-4baf-403a-85b1-3ee5bff14ef0,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))
+wb =  sqrt((1 - 2*zeta^2)+sqrt(1-2*zeta^2)^2+1)*wn
+",3,4,05/03/2024  12:53 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,9580ac8f-e8f9-413d-b277-7bd2c34e6e25,"wn = 50;
+zeta = 0.5;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Set up transfer function
+
+%num = wn^2;
+%den = [1, 2*zeta*wn, wn^2];
+
+%Gtf = tf( num, den )
+
+%pzmap(Gtf)
+%[z,p,k] = tf2zp(num,den)
+
+%%%%
+
+syms s
+G(s) = wn^2 / ( s^2 + 2*zeta*wn*s + wn^2 )
+
+
+
+%% Make bode plot without using bode function
+
+
+% omega (w) is frequencies
+
+w = 2 * pi * logspace(-2, 2, 200);
+
+
+% s = j*w
+
+magnitude = abs(   G( 1 * j * w )   );
+magnitude_in_dB = 20 * log10( magnitude );
+
+phase = angle( G( 1 * j * w) );
+phase_in_deg = rad2deg( phase );
+
+% Plot
+
+subplot(2, 1, 1)
+semilogx(w, magnitude_in_dB);
+ylim([-50, 10])
+title('Magnitude [db]');
+
+subplot(2, 1, 2);
+semilogx(w, phase_in_deg);
+ylim([-200, 10])
+title('Phase [deg]');
+
+
+
+
+
+% Find resonant frequency and resonant amplitude values
+
+[val, loc] = max(magnitude_in_dB);
+
+val = double(val);
+
+val
+w(loc)
+
+
+
+%syms x
+%eqn = -3 == log10(x)
+%solve(eqn, x)
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 1/ (2*sqrt(zeta) )
+
+
+
+% Peak amplitude in units of decibels
+%Mr = 
+
+
+
+% Bandwidth in units of rad/sec
+%wb = 
+
+",1,4,05/03/2024  12:52 AM UTC,false,0.000000
+a966b63bad5cf13d29508fb9412d5020f86db145,7447cee1-2e38-47b3-86dc-96056c9f6963,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn*sqrt(1-2*zeta^2); % resonant frequency in units of rad/sec
+Mr = 20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+wb =  wn*sqrt(1-2*zeta^2+sqrt(4*zeta^4-4*zeta^2+2)); % bandwidth in units of rad/sec
+
+fprintf('Peak Resonant frequency is %f rad/sec\n', wr);
+fprintf('Magnitude is %f dB\n', Mr);
+fprintf('Bandwidth is %f rad/sec\n', wb);",4,4,05/03/2024  12:33 AM UTC,true,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,73ef7d84-60af-4fec-9da6-35932f6eaeec,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 1)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+% Simplified further by hand to 1/(2*z*sqrt(1 - zeta^2))
+
+bwSol = solve(absGiw == 0.5, w)
+restriction = bwSol > wSol;
+solve(restriction, w)
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",3,4,05/03/2024  12:32 AM UTC,false,0.000000
+a966b63bad5cf13d29508fb9412d5020f86db145,25e620fe-5813-4df4-9379-53331712d9ac,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn*sqrt(1-2*zeta^2); % resonant frequency in units of rad/sec
+Mr = 20*log(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+wb =  wn*sqrt(1-2*zeta^2+sqrt(4*zeta^4-4*zeta^2+2)); % bandwidth in units of rad/sec
+
+fprintf('Peak Resonant frequency is %f rad/sec\n', wr);
+fprintf('Magnitude is %f dB\n', Mr);
+fprintf('Bandwidth is %f rad/sec\n', wb);",3,4,05/03/2024  12:32 AM UTC,false,0.000000
+a966b63bad5cf13d29508fb9412d5020f86db145,d6c2e7f5-aa3e-430c-ab68-cef1012558a6,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn*sqrt(1-2*zeta^2); % resonant frequency in units of rad/sec
+Mr = 20*log(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+wb =  wn*sqrt(1-2*zeta^2+sqrt(4*zeta^4-4*zeta^2+2)); % bandwidth in units of rad/sec
+
+fprintf('Peak Resonant frequency is %f rad/sec\n', wr);
+fprintf('Magnitude is %f dB\n', Mr);
+fprintf('Bandwidth is %f rad/sec\n', wb);",3,4,05/03/2024  12:31 AM UTC,false,0.000000
+f746af1855dfa704cb7914d75d5b9d40b987222f,5ce45885-f87a-4958-bf93-2bce8d235428,"wn = 50;
+zeta = 0.5;
+
+sys = tf([wn^2] , [1 2*zeta*wn wn^2]);
+
+% Compute the values below:
+wr = wn*sqrt(1-zeta^2) % resonant frequency in units of rad/sec
+Mr = NaN % peak amplitude in units of decibels
+wb = NaN % bandwidth in units of rad/sec",1,4,05/03/2024  12:31 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,6e877d7f-19e0-4956-9dcc-dff50d4bef1b,"wn = 50;
+zeta = 0.5;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+% Set up transfer function
+
+num = wn^2;
+den = [1, 2*zeta*wn, wn^2];
+
+Gtf = tf( num, den )
+
+pzmap(Gtf)
+[z,p,k] = tf2zp(num,den)
+
+
+
+% Get impulse response
+
+impulse( Gtf, 0.5 );
+[y, tout] = impulse( Gtf, 0.5 );
+[val, loc] = max(y);
+
+syms x
+eqn = -3 == log10(x)
+solve(eqn, x)
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 1/sqrt(zeta)
+
+
+
+% Peak amplitude in units of decibels
+%Mr = 
+
+
+
+% Bandwidth in units of rad/sec
+%wb = 
+
+",1,4,05/03/2024  12:28 AM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,2f7d4bb3-1484-47b4-814f-22140c001113,"wn = 50;
+zeta = 0.5;
+% Transfer function
+num = wn^2; % Numerator coefficients
+den = [1 2*zeta*wn wn^2]; % Denominator coefficients
+sys = tf(num, den) % Create transfer function model
+
+% Frequency range
+omega = linspace(0.1, 100, 10000); % Avoid zero to prevent division by zero
+
+% Magnitude of the transfer function
+magnitude = wn^2 ./ sqrt((omega.^2 - wn^2).^2 + (2*zeta*wn*omega).^2);
+
+% Convert magnitude to dB
+magnitude_dB = 20 * log10(magnitude);
+
+% Calculate -3 dB from the peak magnitude
+target_dB = - 3;
+
+% Find the frequencies corresponding to -3 dB
+indices = find(magnitude_dB >= target_dB);
+wb_lower = omega(indices(1));
+wb_upper = omega(indices(end));
+
+% Display results
+fprintf('Lower frequency at -3 dB: %.2f rad/s\n', wb_lower);
+fprintf('Upper frequency at -3 dB: %.2f rad/s\n', wb_upper);
+fprintf('Bandwidth (-3 dB to -3 dB): %.2f rad/s\n', wb_upper - wb_lower);
+
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = wb_upper % bandwidth rad/s at -3 dB",4,4,05/03/2024  12:27 AM UTC,true,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,d047be6d-1876-4825-969f-fe03fc3c1522,"wn = 50;
+zeta = 0.5;
+% Transfer function
+num = wn^2; % Numerator coefficients
+den = [1 2*zeta*wn wn^2]; % Denominator coefficients
+sys = tf(num, den) % Create transfer function model
+
+% Frequency range
+omega = linspace(0.1, 100, 10000); % Avoid zero to prevent division by zero
+
+% Magnitude of the transfer function
+magnitude = wn^2 ./ sqrt((omega.^2 - wn^2).^2 + (2*zeta*wn*omega).^2);
+
+% Convert magnitude to dB
+magnitude_dB = 20 * log10(magnitude);
+
+% Calculate -3 dB from the peak magnitude
+target_dB = - 3;
+
+% Find the frequencies corresponding to -3 dB
+indices = find(magnitude_dB >= target_dB);
+wb_lower = omega(indices(1));
+wb_upper = omega(indices(end));
+
+% Display results
+fprintf('Lower frequency at -3 dB: %.2f rad/s\n', wb_lower);
+fprintf('Upper frequency at -3 dB: %.2f rad/s\n', wb_upper);
+fprintf('Bandwidth (-3 dB to -3 dB): %.2f rad/s\n', wb_upper - wb_lower);
+
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = wb_upper % bandwidth rad/s at -3 dB",4,4,05/03/2024  12:27 AM UTC,true,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,e04100ef-f957-4259-b489-09138e6f3b1b,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+% Find System Bandwidth
+wb = NaN;",3,4,05/03/2024  12:27 AM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,a63796ec-6d79-48d1-96f1-c8976405438a,"wn = 50;
+zeta = 0.5;
+% Transfer function
+num = wn^2; % Numerator coefficients
+den = [1 2*zeta*wn wn^2]; % Denominator coefficients
+sys = tf(num, den) % Create transfer function model
+
+% Frequency range
+omega = linspace(0.1, 100, 10000); % Avoid zero to prevent division by zero
+
+% Magnitude of the transfer function
+magnitude = wn^2 ./ sqrt((omega.^2 - wn^2).^2 + (2*zeta*wn*omega).^2);
+
+% Convert magnitude to dB
+magnitude_dB = 20 * log10(magnitude);
+
+% Find the maximum magnitude (peak)
+[peakMag, idxPeak] = max(magnitude_dB);
+peakFreq = omega(idxPeak);
+
+% Calculate -3 dB from the peak magnitude
+target_dB = - 3;
+
+% Find the frequencies corresponding to -3 dB
+indices = find(magnitude_dB >= target_dB);
+wb_lower = omega(indices(1));
+wb_upper = omega(indices(end));
+
+% Display results
+fprintf('Peak Frequency: %.2f rad/s\n', peakFreq);
+fprintf('Lower frequency at -3 dB: %.2f rad/s\n', wb_lower);
+fprintf('Upper frequency at -3 dB: %.2f rad/s\n', wb_upper);
+fprintf('Bandwidth (-3 dB to -3 dB): %.2f rad/s\n', wb_upper - wb_lower);
+
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = wb_upper - wb_lower % bandwidth rad/s at -3 dB",3,4,05/03/2024  12:24 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,eb939f0a-d321-4b50-a75e-7c72f73a9879,"wn = 50;
+zeta = 0.5;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set up transfer function
+
+num = wn^2;
+den = [1, 2*zeta*wn, wn^2];
+
+Gtf = tf( num, den )
+
+pzmap(Gtf)
+[z,p,k] = tf2zp(num,den)
+
+
+% Get impulse response
+
+impulse( Gtf, 0.5 );
+
+[y, tout] = impulse( Gtf, 0.5 );
+
+[val, loc] = max(y)
+
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = 1/zeta
+
+
+
+% Peak amplitude in units of decibels
+%Mr = 
+
+
+
+% Bandwidth in units of rad/sec
+%wb = 
+
+",1,4,05/03/2024  12:23 AM UTC,false,0.000000
+f746af1855dfa704cb7914d75d5b9d40b987222f,ca7fbd73-a008-4d72-b740-880eb2beb7bd,"wn = 50;
+zeta = 0.5;
+
+sys = tf([wn^2] , [1 2*zeta*wn wn^2]);
+
+damp(sys)
+
+% Compute the values below:
+wr = 5 % resonant frequency in units of rad/sec
+Mr = NaN % peak amplitude in units of decibels
+wb = NaN % bandwidth in units of rad/sec",1,4,05/03/2024  12:23 AM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,d36e6ea6-391c-46c6-b739-ca68b1630f8f,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))
+wb =  (1 - zeta^2)*wn
+",3,4,05/03/2024  12:23 AM UTC,false,0.000000
+8178a65179c5cbe6ff06243263c0641ceb1c1dd0,189ed113-9c7f-4371-ba46-13cd67f73066,"wn = 50;
+zeta = 0.5;
+
+% Compute the values below:
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set up transfer function
+
+num = wn^2;
+den = [1, 2*zeta*wn, wn^2];
+
+Gtf = tf( num, den )
+
+pzmap(Gtf)
+[z,p,k] = tf2zp(num,den)
+
+
+% Get impulse response
+
+impulse( Gtf, 0.5 );
+
+[y, tout] = impulse( Gtf, 0.5 );
+
+[val, loc] = max(y)
+
+
+
+
+% Resonant frequency in units of rad/sec
+
+wr = log10(val)
+
+
+
+% Peak amplitude in units of decibels
+%Mr = 
+
+
+
+% Bandwidth in units of rad/sec
+%wb = 
+
+",1,4,05/03/2024  12:22 AM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,d31c8844-2b06-42b5-b4b6-32695ed9920c,"wn = 50;
+zeta = 0.5;
+% Transfer function
+num = wn^2; % Numerator coefficients
+den = [1 2*zeta*wn wn^2]; % Denominator coefficients
+sys = tf(num, den) % Create transfer function model
+
+% Frequency range
+omega = linspace(0.1, 100, 10000); % Avoid zero to prevent division by zero
+
+% Magnitude of the transfer function
+magnitude = wn^2 ./ sqrt((omega.^2 - wn^2).^2 + (2*zeta*wn*omega).^2);
+
+% Convert magnitude to dB
+magnitude_dB = 20 * log10(magnitude);
+
+% Find the maximum magnitude (peak)
+[peakMag, idxPeak] = max(magnitude_dB);
+peakFreq = omega(idxPeak);
+
+% Calculate -3 dB from the peak magnitude
+target_dB = peakMag - 3;
+
+% Find the frequencies corresponding to -3 dB
+indices = find(magnitude_dB >= target_dB);
+wb_lower = omega(indices(1));
+wb_upper = omega(indices(end));
+
+% Display results
+fprintf('Peak Frequency: %.2f rad/s\n', peakFreq);
+fprintf('Lower frequency at -3 dB: %.2f rad/s\n', wb_lower);
+fprintf('Upper frequency at -3 dB: %.2f rad/s\n', wb_upper);
+fprintf('Bandwidth (-3 dB to -3 dB): %.2f rad/s\n', wb_upper - wb_lower);
+
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = wb_upper - wb_lower % bandwidth rad/s at -3 dB",3,4,05/03/2024  12:21 AM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,e6823d2a-d16e-42f3-9b61-a24836edcd30,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 1)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",3,4,05/03/2024  12:20 AM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,5f2e9c71-3940-4ec0-953d-6873dc7b5918,"wn = 50;
+zeta = 0.5;
+
+syms G(s) w z wnn
+assume(z > 0 | z < 1)
+assumeAlso(z, 'real')
+assume(wnn, {'positive', 'real'})
+assume(w, {'positive', 'real'})
+
+G = wnn^2/(s^2 + 2*z*wnn*s + wnn^2);
+Giw = subs(G,s, 1i*w);
+absGiw = abs(Giw)
+dGiw = diff(absGiw);
+wSol = solve(dGiw == 0)
+
+peakSol = abs(subs(Giw, w, wSol))
+
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(1/2*zeta*sqrt(1-zeta^2)); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",2,4,05/03/2024  12:20 AM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,909a9345-9b72-4d34-a024-aa22649cba24,"wn = 50;
+zeta = 0.5;
+% Transfer function
+num = wn^2; % Numerator coefficients
+den = [1 2*zeta*wn wn^2]; % Denominator coefficients
+sys = tf(num, den) % Create transfer function model
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = 58.40 % bandwidth rad/s at -3 dB",3,4,05/03/2024  12:14 AM UTC,false,0.000000
+591dc8c956b12e6f561794168ae94a878f936882,6294f813-5314-454e-a6f4-9f507c952544,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+t_f = tf([0, 0, wn * wn], [1, 2 * zeta * wn, wn*wn]);
+
+syms w;
+
+fn(w) = wn * wn / ((1j * w) ^ 2 + 2 * zeta * wn * 1j * w + wn * wn);
+
+omega = 0:0.01:250;
+
+mfn = matlabFunction(fn);
+
+result = mfn(omega);
+
+magnitude = mag2db(abs(result));
+
+plot(omega, magnitude)
+legend(""Magnitude"")
+hold off
+
+[peak, location] = findpeaks(magnitude, omega);
+
+wr = location % resonant frequency in units of rad/sec
+Mr = peak % peak amplitude in units of decibels
+
+bandwidth_mag = - 3
+
+bandwidth_mag_index = find(min(abs(magnitude - bandwidth_mag)) == abs(magnitude - bandwidth_mag));
+
+
+wb = omega(bandwidth_mag_index) % bandwidth in units of rad/sec",4,4,05/03/2024  12:14 AM UTC,true,0.000000
+591dc8c956b12e6f561794168ae94a878f936882,31ab4d75-ec77-40ad-9e54-f4303b646202,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+t_f = tf([0, 0, wn * wn], [1, 2 * zeta * wn, wn*wn]);
+
+syms w;
+
+fn(w) = wn * wn / ((1j * w) ^ 2 + 2 * zeta * wn * 1j * w + wn * wn);
+
+omega = 0:0.1:750;
+
+mfn = matlabFunction(fn);
+
+result = mfn(omega);
+
+magnitude = mag2db(abs(result));
+
+plot(omega, magnitude)
+legend(""Magnitude"")
+hold off
+
+[peak, location] = findpeaks(magnitude, omega);
+
+wr = location % resonant frequency in units of rad/sec
+Mr = peak % peak amplitude in units of decibels
+
+bandwidth_mag = - 3
+
+bandwidth_mag_index = find(min(abs(magnitude - bandwidth_mag)) == abs(magnitude - bandwidth_mag));
+
+
+wb = omega(bandwidth_mag_index) % bandwidth in units of rad/sec",3,4,05/03/2024  12:13 AM UTC,false,0.000000
+591dc8c956b12e6f561794168ae94a878f936882,c736e47b-cafd-468b-9be7-8e8ca19c75c2,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+t_f = tf([0, 0, wn * wn], [1, 2 * zeta * wn, wn*wn]);
+
+syms w;
+
+fn(w) = wn * wn / ((1j * w) ^ 2 + 2 * zeta * wn * 1j * w + wn * wn);
+
+omega = 0:0.1:750;
+
+mfn = matlabFunction(fn);
+
+result = mfn(omega);
+
+magnitude = mag2db(abs(result));
+
+plot(omega, magnitude)
+legend(""Magnitude"")
+hold off
+
+[peak, location] = findpeaks(magnitude, omega);
+
+wr = location % resonant frequency in units of rad/sec
+Mr = peak % peak amplitude in units of decibels
+
+bandwidth_mag = Mr - 3
+
+bandwidth_mag_index = find(min(abs(magnitude - bandwidth_mag)) == abs(magnitude - bandwidth_mag));
+
+
+wb = omega(bandwidth_mag_index) % bandwidth in units of rad/sec",2,4,05/03/2024  12:12 AM UTC,false,0.000000
+591dc8c956b12e6f561794168ae94a878f936882,a7fe9425-c376-41c3-9ace-cf6292bd4391,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+t_f = tf([0, 0, wn * wn], [1, 2 * zeta * wn, wn*wn]);
+
+syms w;
+
+fn(w) = wn * wn / ((1j * w) ^ 2 + 2 * zeta * wn * 1j * w + wn * wn);
+
+omega = 0:0.1:750;
+
+mfn = matlabFunction(fn);
+
+result = mfn(omega);
+
+magnitude = abs(result);
+
+plot(omega, magnitude)
+legend(""Magnitude"")
+
+[peak, location] = findpeaks(magnitude, omega);
+
+wr = location % resonant frequency in units of rad/sec
+Mr = 10 * log10(peak) % peak amplitude in units of decibels
+
+bandwidth_mag = 10 ^ ((Mr - 3) / 20)
+
+bandwidth_mag_index = find(min(abs(magnitude - bandwidth_mag)) == abs(magnitude - bandwidth_mag));
+
+
+wb = omega(bandwidth_mag_index) % bandwidth in units of rad/sec",1,4,05/03/2024  12:07 AM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,12cac93c-c20a-4f15-8249-bec0b3722796,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms TFunc(w) Mag(w) w;
+
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2);
+Mag(w) = 20*log10(abs(TFunc));
+
+% Resonance is when derivative of magnitude is 0
+MagDiff = diff(Mag); 
+eqn = 0 == MagDiff;
+Wrsolved = solve(eqn);
+
+Mrsolved = Mag(Wrsolved(1));
+
+% bandwidth frequency when magnitude is -3
+eqn2 = -3 == Mag
+Wbsolved = solve(eqn2)
+
+wr =  double(Wrsolved(1))% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved)% peak amplitude in units of decibels
+wb =  double(abs(Wbsolved(1)))% bandwidth in units of rad/sec",3,4,05/03/2024  12:07 AM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,3a593267-2e1e-4f00-8d8c-c7714230c210,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms TFunc(w) Mag(w) w;
+
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2);
+Mag(w) = 20*log10(abs(TFunc));
+
+% Resonance is when derivative of magnitude is 0
+MagDiff = diff(Mag); 
+eqn = 0 == MagDiff;
+Wrsolved = solve(eqn);
+Mrsolved = Mag(Wrsolved(1));
+
+eqn2 = -3 == Mag
+solve(eqn2)
+abs(25*(3 - 4*10^(3/20))^(1/2) + 25*j)
+Wbsolved = solve(eqn2)
+Wbsolved(1)
+abs(Wbsolved(1))
+%double(abs(Wbsolved(1)))
+wr =  double(Wrsolved(1))% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved)% peak amplitude in units of decibels
+%wb =  double(abs(Wbsolved(1)))% bandwidth in units of rad/sec
+wb = 65.6982",3,4,05/03/2024  12:03 AM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,210b7be3-f51c-4f5e-a9ab-b49d5ac97479,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+% Find System Bandwidth
+index = find(abs(t + 3) == min(abs(t + 3)));
+omega_bandwidth = omega(index);
+wb = omega(index) % bandwidth in units of rad/sec",3,4,05/03/2024  12:03 AM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,0130012b-2e2f-4013-b64e-a560f04b9678,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+% Find System Bandwidth
+index = find(abs(t + 3) == min(abs(t + 3)));
+
+% Get the corresponding omega value
+omega_bandwidth = omega(index);
+omega_bandwidth = omega_bandwidth*180/pi;
+wb = omega_bandwidth; % bandwidth in units of rad/sec",3,4,05/03/2024  12:02 AM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,83a2c938-59ec-46be-8089-5db56ae4caf1,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec dampening ratio less than 1/sqrt(2)
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+wb = 2 * zeta * wn % bandwidth rad/s",3,4,05/02/2024  11:58 PM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,597d91f3-a893-468f-9d92-c14bb7f96953,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+% Find System Bandwidth
+wb = 3757; % bandwidth in units of rad/sec",3,4,05/02/2024  11:57 PM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,431c6ca2-93b3-4b7b-9569-e94d41c06772,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+% Find System Bandwidth
+wb = 2.1526e+05; % bandwidth in units of rad/sec",3,4,05/02/2024  11:57 PM UTC,false,0.000000
+08494eb84970e184122935a430228db4488bed66,6e874f08-2912-41da-b25d-d5273e580ec1,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+%%  convert to transfer function (this method only valid for IC = 0) = tf2nd
+tf2nd = tf([0  0 wn^2], [1  2*0.5*zeta*wn   wn^2])
+[mag_vec, phase_vec, wout] = bode(tf2nd);
+[gpeak, fpeak] = getPeakGain(tf2nd)  %%  peak gain, resosnat freq
+iv_phase = find(phase_vec(:) <= pi/2);
+%[wout, zeta_out, pvec] = damp(tf2nd)
+%bode(tf2nd)
+%%[max_mag, idx_max_mag] = max(mag_vec(:));
+%wr = wout(idx_max_mag); % resonant frequency in units of rad/sec
+wr = fpeak ; % resonant frequency in units of rad/sec
+%%Mr = 20*log10(max_mag); % peak amplitude in units of decibels
+Mr = mag2db(gpeak);  % peak amplitude in units of decibels
+%%wb = wout(iv_phase(end)) - wout(1); % bandwidth in units of rad/sec
+[w19_vec] = getGainCrossover(tf2nd,1); 
+wb = w19_vec(2) - w19_vec(1); % bandwidth in units of rad/sec",0,4,05/02/2024  11:56 PM UTC,false,0.000000
+08494eb84970e184122935a430228db4488bed66,21e3cae7-ff77-444b-ba8b-715efb1b4b59,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+%%  convert to transfer function (this method only valid for IC = 0) = tf2nd
+tf2nd = tf([0  0 wn^2], [1  2*0.5*zeta*wn   wn^2])
+[mag_vec, phase_vec, wout] = bode(tf2nd);
+[gpeak, fpeak] = getPeakGain(tf2nd)  %%  peak gain, resosnat freq
+iv_phase = find(phase_vec(:) <= pi/2);
+%[wout, zeta_out, pvec] = damp(tf2nd)
+bode(tf2nd)
+%%[max_mag, idx_max_mag] = max(mag_vec(:));
+%wr = wout(idx_max_mag); % resonant frequency in units of rad/sec
+wr = fpeak ; % resonant frequency in units of rad/sec
+%%Mr = 20*log10(max_mag); % peak amplitude in units of decibels
+Mr = mag2db(gpeak);  % peak amplitude in units of decibels
+%%wb = wout(iv_phase(end)) - wout(1); % bandwidth in units of rad/sec
+[w19_vec] = getGainCrossover(tf2nd,1); 
+wb = w19_vec(2) - w19_vec(1); % bandwidth in units of rad/sec",0,4,05/02/2024  11:54 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,2e879458-9318-4aa6-a2dc-b19831bbce6c,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+
+
+% Compute the values below:
+wr =  wn*sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2/sqrt(1-zeta^2)); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",2,4,05/02/2024  11:54 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,1f31a2cb-21fe-4baa-b79c-065f67930e64,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr = 20 * log10(1 / (2 * zeta * sqrt(1 - zeta^2))) % peak amplitude in units of decibels
+wb = 63.5593 % bandwidth in units of rad/sec",4,4,05/02/2024  11:53 PM UTC,true,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,8119c509-97b4-4592-9fec-1817cb810b38,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms TFunc(w) Mag(w) w;
+
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2);
+Mag(w) = 20*log10(abs(TFunc));
+
+% Resonance is when derivative of magnitude is 0
+MagDiff = diff(Mag); 
+eqn = 0 == MagDiff;
+Wrsolved = solve(eqn);
+Mrsolved = Mag(Wrsolved(1));
+
+eqn2 = -3 == Mag
+Wbsolved = solve(eqn2)
+double(Wbsolved(1))
+wr =  double(Wrsolved(1));% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved);% peak amplitude in units of decibels
+wb =  double(Wbsolved(2));% bandwidth in units of rad/sec",3,4,05/02/2024  11:52 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,cf9e4fbe-48ef-449f-8063-cd37261e596e,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr = 20 * log10(1 / (2 * zeta * sqrt(1 - zeta^2))) % peak amplitude in units of decibels
+wb = 2 * zeta * wn % bandwidth in units of rad/sec",3,4,05/02/2024  11:49 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,006f5271-facc-42df-a4c0-8615141ada78,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr = 20 * log10(1 / (2 * zeta * sqrt(1 - zeta^2))) % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",3,4,05/02/2024  11:49 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,d3ca20f4-3589-49b7-b1d8-003c420c545d,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr = Mr = 20 * log10(1 / (2 * zeta * sqrt(1 - zeta^2))) % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",0,4,05/02/2024  11:49 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,734bd61a-7a09-4b12-910d-f0d49685d84c,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr = 0 % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",2,4,05/02/2024  11:48 PM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,bb791b29-8a58-468d-b7ea-a6abb0289c4e,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms s TFunc(w) Mag(w) w;
+%s = j*w;
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2);
+Mag(w) = 20*log10(abs(TFunc));
+MagDiff = diff(Mag); % Resonance is when derivative of magnitude plot is 0
+eqn = 0 == MagDiff;
+Wrsolved = solve(eqn);
+Mrsolved = Mag(Wrsolved(1));
+eqn2 = -3 == Mag(Wrsolved(1));
+Wbsolved = solve(eqn2);
+wr =  double(Wrsolved(1));% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved);% peak amplitude in units of decibels
+wb =  double(Wbsolved(2));% bandwidth in units of rad/sec",0,4,05/02/2024  11:48 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,76d1c3f9-737e-4b33-9bfe-07f2f795c8de,"wn = 50;
+zeta = 0.5;
+
+
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2) % resonant frequency in units of rad/sec
+Mr =  % peak amplitude in units of decibels
+wb =  % bandwidth in units of rad/sec",0,4,05/02/2024  11:47 PM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,bad80e6a-11b0-4981-8c9b-a7693f64774c,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+% Find Resonant Frequency
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+
+% Find Magnitude of Resonant Frequency
+Mr = 20*log10(max_output) % peak amplitude in units of decibels
+
+
+wb = NaN; % bandwidth in units of rad/sec",3,4,05/02/2024  11:47 PM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,7c54b947-2181-40db-bf40-ae6ff0e87faf,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms s TFunc(w) Mag(w) w;
+%s = j*w;
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2)
+Mag(w) = 20*log10(abs(TFunc))
+TFdiff = diff(Mag)
+eqn = 0 == TFdiff
+Wrsolved = solve(eqn)
+Mrsolved = Mag(Wrsolved(1))
+wr =  double(Wrsolved(1))% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved)% peak amplitude in units of decibels
+wb =  NaN;% bandwidth in units of rad/sec",3,4,05/02/2024  11:45 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,36980824-07ca-46e2-a024-a58fd16950a7,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+
+% Compute the values below:
+wr =  wn/sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2/sqrt(1-zeta^2)); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:44 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,cd6d8619-8555-4ccb-91ea-01b373e767ae,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+
+% Compute the values below:
+wr =  wn/sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:44 PM UTC,false,0.000000
+70aaf2d08a1169948b39adee353b25b6b5359d0c,19c3892d-fdc6-4ddd-996b-fb0bf0ae4c3f,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+omega = linspace(0.1,100,5000); % Create time
+t = (wn^2)./(-omega.^2 + 2*zeta*wn*1i*omega + wn^2); % Create function
+
+output = abs(t); 
+[max_output, max_freq] = max(output); 
+
+
+wr = omega(max_freq) % resonant frequency in units of rad/sec
+Mr = NaN; % peak amplitude in units of decibels
+wb = NaN; % bandwidth in units of rad/sec",2,4,05/02/2024  11:44 PM UTC,false,0.000000
+5b41a25e700afa1018a17fe910935233a01dacaf,08d31895-cf6a-4608-9226-be2c3d98a728,"wn = 50;
+zeta = 0.5;
+
+G = tf([0 wn], [1 2*zeta*wn wn^2])
+
+% Compute the values below:
+wr =  % resonant frequency in units of rad/sec
+Mr =  % peak amplitude in units of decibels
+wb = bandwidth(G) % bandwidth in units of rad/sec",0,4,05/02/2024  11:43 PM UTC,false,0.000000
+9a80eb1d38e3aeb8663e2fa613a2cef854d1f15e,7ce8d26d-bc53-4988-9e00-1dd8d8086499,"wn = 50;
+zeta = 0.5;
+
+%num = wn;
+%den = [1 2*zeta*wn wn^2];
+%G = tf(num,den);
+%s = i*w
+G = (wn^2)./(-wn.^2 + 2*zeta*wn*wn + wn.^2);
+
+% Compute the values below:
+wr = NaN % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(G)); % peak amplitude in units of decibels
+wb = NaN % bandwidth in units of rad/sec",1,4,05/02/2024  11:42 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,416e99bd-7129-4a32-8ab3-9fa7e17b1b99,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+pole(G)
+
+syms w z s
+x = ilaplace((w^2)/(s^2 + 2*z*w*s + w^2))
+
+% Compute the values below:
+wr =  wn/sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:40 PM UTC,false,0.000000
+08494eb84970e184122935a430228db4488bed66,cfb740dc-0941-4560-b8dd-c2d36ce12652,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+%%  convert to transfer function (this method only valid for IC = 0) = tf2nd
+tf2nd = tf([0  0 wn^2], [1  2*0.5*zeta*wn   wn^2])
+[mag_vec, phase_vec, wout] = bode(tf2nd);
+iv_phase = find(phase_vec(:) <= pi/2);
+%[wout, zeta_out, pvec] = damp(tf2nd)
+bode(tf2nd)
+[max_mag, idx_max_mag] = max(mag_vec(:));
+wr = wout(idx_max_mag); % resonant frequency in units of rad/sec
+Mr = 20*log10(max_mag); % peak amplitude in units of decibels
+wb = wout(iv_phase(end)) - wout(1); % bandwidth in units of rad/sec",0,4,05/02/2024  11:40 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,9b93808a-9268-406f-986a-bdcb437e44f6,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+pole(G)
+
+syms w z s
+x = ilaplace((w^2)/(s^2 + 2*z*w*s + w^2))
+
+% Compute the values below:
+wr =  wn*sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:39 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,d4dd909b-13c9-4db3-9cb4-ca59a8b2ed16,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  (1 - zeta^2)*wn% bandwidth in units of rad/sec
+",3,4,05/02/2024  11:38 PM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,98f838c4-0d33-4c8a-b887-b2d00619679d,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms s TFunc(w) Mag(w) w;
+%s = j*w;
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2)
+Mag(w) = 20*log10(abs(TFunc))
+TFdiff = diff(Mag)
+eqn = 0 == TFdiff
+Mrsolved = solve(eqn)
+Mrsolved(1)
+wr =  NaN;% resonant frequency in units of rad/sec
+Mr =  double(Mrsolved(1));% peak amplitude in units of decibels
+wb =  NaN;% bandwidth in units of rad/sec",1,4,05/02/2024  11:38 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,523691f1-0df0-4039-9306-dba36cf223df,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  (1 - zeta^4)*wn% bandwidth in units of rad/sec
+",3,4,05/02/2024  11:38 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,c4b359c4-0587-4ee9-85a0-c549889486b5,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  (1 - zeta^2)*wn% bandwidth in units of rad/sec
+",3,4,05/02/2024  11:38 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,8017ad14-5400-4ce3-8efd-2f2bf3cad170,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  (1 - zeta)*wn% bandwidth in units of rad/sec
+",3,4,05/02/2024  11:38 PM UTC,false,0.000000
+9a80eb1d38e3aeb8663e2fa613a2cef854d1f15e,cc349b51-7700-4318-8342-a3406f4c4653,"wn = 50;
+zeta = 0.5;
+
+num = wn;
+den = [1 2*zeta*wn wn^2];
+G = tf(num,den);
+
+% Compute the values below:
+wr = NaN % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(G)); % peak amplitude in units of decibels
+wb = NaN % bandwidth in units of rad/sec",0,4,05/02/2024  11:38 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,d456b38a-b311-4668-bc45-187132f29d94,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  2*(1 - zeta^2)*wn% bandwidth in units of rad/sec
+",3,4,05/02/2024  11:38 PM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,db8a40a3-9bdb-4584-bb85-aee7a537f104,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % peak amplitude in units of decibels
+
+% Coefficients of the polynomial in omega^2
+a = 1;
+b = -2 * wn^2;
+c = wn^4 * (1 - 2 * zeta^2);
+
+% Solve the quadratic equation
+omega_squared = roots([a b c]);
+
+% Real positive roots give the frequencies
+omega = sqrt(omega_squared);
+omega = omega(imag(omega) == 0 & omega > 0); % Consider only real, positive values
+
+% Display bandwidth
+wb = max(omega) - min(omega)% bandwidth in units of rad/sec",3,4,05/02/2024  11:37 PM UTC,false,0.000000
+9e93d35fc6403035a3cb6adf74e93d82011bd7a8,36b240f6-98dc-4f3a-80e3-7e849e075f8f,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+syms s TFunc(w) Mag(w) w;
+%s = j*w;
+TFunc(w) = wn^2 / ((j*w)^2 + 2*zeta*wn*(j*w) + wn^2)
+Mag(w) = 20*log10(abs(TFunc))
+TFdiff = diff(Mag)
+eqn = 0 == TFdiff
+Mrsolved = solve(eqn)
+wr =  NaN;% resonant frequency in units of rad/sec
+Mr =  Mrsolved(1);% peak amplitude in units of decibels
+wb =  NaN;% bandwidth in units of rad/sec",1,4,05/02/2024  11:37 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,aca768fb-79e8-4ba8-9820-717ffb22501b,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+syms w z s
+x = ilaplace((w^2)/(s^2 + 2*z*w*s + w^2))
+
+% Compute the values below:
+wr =  sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:36 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,9d7cb02f-ad58-4846-ade9-87a406c0fb35,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  wr * (1 - zeta^2)% bandwidth in units of rad/sec",3,4,05/02/2024  11:35 PM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,44a29b22-09f9-4143-99bb-7bea6d1f87cd,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = norm(poles(1)) % resonant frequency in units of rad/sec
+Mr = 20*log10(abs(poles(1)))  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:34 PM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,3c9b65b9-6179-4b10-97f9-0e53e18a4075,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = norm(poles(1)) % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:33 PM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,4df4b184-93fc-46fd-8d39-d9b733fdf0ab,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = wn * 180/pi % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:31 PM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,4f148477-4fdb-461b-bae0-1f4622316667,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec
+M_r = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(M_r) % Convert to decibels% peak amplitude in units of decibels
+wb = 2 * zeta * wn % bandwidth in units of rad/sec",3,4,05/02/2024  11:31 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,814ae7d6-dda8-4c5a-b11f-e3e8e223e24f,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr = 20*log10(1 / (2*zeta*sqrt(1 - zeta^2)));  % peak amplitude in units of decibels
+wb = wn * sqrt(1 - 2*zeta^2 + sqrt(4*zeta^4 - 4*zeta^2 + 2));  % bandwidth in units of rad/sec",4,4,05/02/2024  11:29 PM UTC,true,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,1d1601f3-415c-4566-a930-6cb1978e5367,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = abs(25 - 3^(1/2)*25i) % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:28 PM UTC,false,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,2ff90d65-152d-48bf-a24b-ea13c3b4e5ff,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20*log10(1/((2*zeta*sqrt(1-zeta^2))))% peak amplitude in units of decibels
+wb =  wn*sqrt(1-2*zeta^2 + sqrt(2-4*zeta^2 + 4*zeta^4))% bandwidth in units of rad/sec",4,4,05/02/2024  11:28 PM UTC,true,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,4fd032fc-8adb-43d7-bad5-575f9f1d7a2e,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20*log10(1/((2*zeta*sqrt(1-zeta^2))))% peak amplitude in units of decibels
+wb =  wn*sqrt(1-zeta^2 + sqrt(2-4*zeta^2 + 4*zeta^4))% bandwidth in units of rad/sec",3,4,05/02/2024  11:28 PM UTC,false,0.000000
+899ca2ab15c9fb2701bdb065418f415bcf8948e0,adcbdb77-5ccf-44c1-af26-8d148c24718e,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2 * zeta^2) % resonant frequency in units of rad/sec
+Mr = 1 / (2 * zeta * sqrt(1 - zeta^2));
+Mr = 20 * log10(Mr) % Convert to decibels% peak amplitude in units of decibels
+wb = 2 * zeta * wn % bandwidth in units of rad/sec",3,4,05/02/2024  11:27 PM UTC,false,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,fce2e580-799d-4bd9-a526-cc2988f8a333,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20*log10(1/((2*zeta*sqrt(1-zeta^2))))% peak amplitude in units of decibels
+% wb =  nan% bandwidth in units of rad/sec",3,4,05/02/2024  11:27 PM UTC,false,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,f0db7ec0-18e5-4314-ab2a-32ac2b66249f,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  1/((2*zeta*sqrt(1-zeta^2)))% peak amplitude in units of decibels
+% wb =  nan% bandwidth in units of rad/sec",2,4,05/02/2024  11:27 PM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,8d4c7f0e-d205-4c4f-80bd-a56255576518,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = abs(real(a(1))) % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:26 PM UTC,false,0.000000
+759bb76ee2fc63b6e9ccfad5432dd18ca9e343d5,31abdbcb-106c-4617-8e7f-3aa77317ae84,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2) % resonant frequency in units of rad/sec
+Mr =  20*log10(1/(2*zeta*sqrt(1-zeta^2))) % peak amplitude in units of decibels
+wb =  wn*sqrt(1-2*zeta^2 + sqrt(1+4*zeta^4)) % bandwidth in units of rad/sec",4,4,05/02/2024  11:26 PM UTC,true,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,36c8ace1-8fcf-4d75-a7ac-e69f1494fdfe,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+syms a
+eqn_a = a + wn^2/a == 2*zeta*wn
+a = solve(eqn_a, a)
+
+% Compute the values below:
+wr = abs(a(1)) % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb = 0 % bandwidth in units of rad/sec",1,4,05/02/2024  11:25 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,5d6b4b17-6b7b-4050-861a-e66d14decafe,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr = 20*log10(1 / (2*zeta*sqrt(1 - zeta^2)));  % peak amplitude in units of decibels
+wb = wn / (2 * zeta);  % bandwidth in units of rad/sec
+omega1 = wr - (zeta*wn)*sqrt(1-2*zeta^2);
+omega2 = wr + (zeta*wn)*sqrt(1-2*zeta^2);
+
+% The bandwidth is the difference between these two frequencies
+wb = omega2 - omega1;",3,4,05/02/2024  11:24 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,7dc44aae-bf88-4837-a4e5-67c2a944d973,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  wn * (1 - zeta^2)% bandwidth in units of rad/sec",3,4,05/02/2024  11:22 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,312bb393-4ba4-45fa-8818-dca84aae586d,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  wn * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  wn * (1 - zeta^2)% bandwidth in units of rad/sec",2,4,05/02/2024  11:22 PM UTC,false,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,85ac00ba-f861-49d2-a2a4-facf08666759,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20*log(1/((2*zeta*sqrt(1-zeta^2))))% peak amplitude in units of decibels
+% wb =  nan% bandwidth in units of rad/sec",2,4,05/02/2024  11:22 PM UTC,false,0.000000
+e09185a4164adfa87afd739f95e8ffdbdc5458bb,ec764f64-445b-4b8f-959f-a683f83c14f5,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn*sqrt(1-2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  double(20*log(1/((2*zeta*sqrt(1-zeta^2)))))% peak amplitude in units of decibels
+% wb =  nan% bandwidth in units of rad/sec",2,4,05/02/2024  11:21 PM UTC,false,0.000000
+ca266b5ef2a5419a96d3a05fe8e54d3b95c8a172,0fa3345f-f668-44d9-b847-9685584f9060,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr =  wn * sqrt(1 - 2*zeta^2)% resonant frequency in units of rad/sec
+Mr =  20 * log10(1 / (2*zeta * sqrt(1 - zeta^2)))% peak amplitude in units of decibels
+wb =  wn * (1 - zeta^2)% bandwidth in units of rad/sec",3,4,05/02/2024  11:21 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,fe729de3-5324-43ae-908d-08da223a23da,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+syms w z s
+x = ilaplace((w^2)/(s^2 + 2*z*w*s + w^2))
+
+% Compute the values below:
+wr =  wn*sqrt(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:21 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,5aaf59fb-7cf4-4b16-aae4-50c6b77fb740,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr = 20*log10(1 / (2*zeta*sqrt(1 - zeta^2)));  % peak amplitude in units of decibels
+wb = wn / (2 * zeta);  % bandwidth in units of rad/sec",3,4,05/02/2024  11:21 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,0ef580cc-b2bf-41ee-bdef-b418cc90f3e8,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr = 20*log10(1 / (2*zeta*sqrt(1 - zeta^2)));;  % peak amplitude in units of decibels
+wb =1;  % bandwidth in units of rad/sec",3,4,05/02/2024  11:20 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,dece4302-4b50-4bfc-96cc-b8dc5486f24b,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+syms w z s
+x = ilaplace((w^2)/(s^2 + 2*z*w*s + w^2))
+
+% Compute the values below:
+wr =  wn*(1 - zeta^2); % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:20 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,1802fcfb-7d43-40a4-acaf-aa82b90fe75a,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr =1;  % peak amplitude in units of decibels
+wb =1;  % bandwidth in units of rad/sec",2,4,05/02/2024  11:19 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,9206956c-df81-4693-9976-11a4d96fb07a,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*(zeta^2)); % resonant frequency in units of rad/sec
+Mr =  % peak amplitude in units of decibels
+wb =  % bandwidth in units of rad/sec",0,4,05/02/2024  11:19 PM UTC,false,0.000000
+ee34099d039a5ad280eabf0f75a67c9f45d85933,fbfffaa1-8467-4005-8187-05a8f820f2f4,"wn = 50;
+zeta = 0.5;
+% Compute the values below:
+wr = wn * sqrt(1 - 2*zeta^2); % resonant frequency in units of rad/sec
+Mr =  % peak amplitude in units of decibels
+wb =  % bandwidth in units of rad/sec",0,4,05/02/2024  11:17 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,3e8d9473-fa55-4b69-96de-b532157ffa07,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+
+% Compute the values below:
+wr =  wn; % resonant frequency in units of rad/sec
+Mr =  20*log10(wn^2); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",1,4,05/02/2024  11:15 PM UTC,false,0.000000
+ea5fad46ba253aa7d6d40d3b1d42db1443fe6628,4d743836-0e10-477b-af65-87d48e0135fb,"wn = 50;
+zeta = 0.5;
+sys = tf(wn*wn, [1 2*zeta*wn wn*wn])
+poles = pole(sys)
+
+% Compute the values below:
+wr = abs(poles(1)) % resonant frequency in units of rad/sec
+Mr = 20*log10(wr)  % peak amplitude in units of decibels
+wb =  % bandwidth in units of rad/sec",0,4,05/02/2024  11:14 PM UTC,false,0.000000
+0d4d7215372ab1050b9959c942d859fcfefcf768,c928087b-7dee-487e-85b6-5b4f95ca07c4,"wn = 50;
+zeta = 0.5;
+
+G = tf(wn^2, [1, 2*zeta*wn, wn^2]);
+[y, ph, wout] = bode(G);
+
+[peakY, maxIdx] = max(y);
+
+% Compute the values below:
+wr =  wout(maxIdx); % resonant frequency in units of rad/sec
+Mr =  20*log10(peakY); % peak amplitude in units of decibels
+%wb =  % bandwidth in units of rad/sec",0,4,05/02/2024  11:13 PM UTC,false,0.000000
